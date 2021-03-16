@@ -97,6 +97,8 @@ echo "Logs: http://$INTERNAL_IP:$NODE_PORT/grafana/explore"
 
 sudo apt-get -y install firefox xauth jq
 
+# setup Ceph secret key for Prometheus benchmark
+echo "Adding ceph-secret.yaml to the prombench setup procedure..."
 CEPH_SECRET=`sudo cat /etc/ceph/admin.secret | base64 -w 0`
 echo "apiVersion: v1" > 1d_ceph-secret.yaml
 echo "kind: Secret" >> 1d_ceph-secret.yaml
