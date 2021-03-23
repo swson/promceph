@@ -39,6 +39,18 @@ echo "Logs: http://$INTERNAL_IP:$NODE_PORT/grafana/explore"
 
 sudo apt-get -y install firefox xauth jq
 
+# setup Ceph secret key for Prometheus benchmark
+echo "Adding ceph-secret.yaml to the prombench setup procedure..."
+CEPH_SECRET=`sudo cat /etc/ceph/admin.secret | base64 -w 0`
+echo "apiVersion: v1" > 1d_ceph-secret.yaml
+echo "kind: Secret" >> 1d_ceph-secret.yaml
+echo "metadata:" >> 1d_ceph-secret.yaml
+echo "  name: ceph-secret" >> 1d_ceph-secret.yaml
+echo "  namespace: prombench-{{ .PR_NUMBER }}" >> 1d_ceph-secret.yaml
+echo "data:" >> 1d_ceph-secret.yaml
+echo "  key: $CEPH_SECRET" >> 1d_ceph-secret.yaml
+mv 1d_ceph-secret.yaml ../prombench/manifests/prombench/benchmark
+
 echo "Start a benchmarking test manually ..."
 # Set the following environment variables
 # Deploy the k8s objects
