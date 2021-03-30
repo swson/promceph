@@ -23,6 +23,8 @@ echo "Bootstrap your cluster..."
 sudo mkdir -p /etc/ceph
 # Replace <ip> with the IP address of your first manager node within your cluster (node1)
 DOMAIN_NAME=`hostname | cut -d . -f2-`
+# should execute the following before running bootstrap
+sudo hostname `head -n 1 node-list`
 sudo ./cephadm bootstrap --mon-ip `hostname -I | cut -d" " -f1`
 echo "Check ceph status..."
 sudo ceph status
@@ -33,8 +35,9 @@ echo "Adding more nodes..."
 # you need to copy the ceph ssh key from your manager node into your new server.
 for node in `tail -n +2 node-list`
 do
-sudo ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node
-sudo ceph orch host add $node
+    sudo ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node
+    # following commadline requires full node names
+    sudo ceph orch host add $node.$DOMAIN_NAME
 done
 
 echo ""
@@ -46,25 +49,25 @@ sudo ceph orch apply osd --all-available-devices
 
 echo ""
 echo "Mounting ceph file system..."
-sudo su -
+#sudo su -
 echo "Creating storage pools..."
-ceph osd pool create cephfs_data # (erasure)
-ceph osd pool create cephfs_metadata
+sudo ceph osd pool create cephfs_data # (erasure)
+sudo ceph osd pool create cephfs_metadata
 echo "Creating the new ceph file system..."
-ceph fs new cephfs cephfs_metadata cephfs_data # (if erasure: ceph osd pool set cephfs_data allow_ec_overwrites true)
+sudo ceph fs new cephfs cephfs_metadata cephfs_data # (if erasure: ceph osd pool set cephfs_data allow_ec_overwrites true)
 echo "Create a ceph metadata server..."
 # ceph orch apply mds *<fs-name>* --placement="*<num-daemons>* [*<host1>* ...]"
-ceph orch apply mds cephfs --placement="1 node1"
+sudo ceph orch apply mds cephfs --placement="1 node0"
 echo "Checking the status of the Ceph MDS..."
-ceph mds stat
+sudo ceph mds stat
 
 echo ""
 echo "Store the secret key used for admin authentication into a file that can be used for mounting the Ceph FS"
-echo $(sed -n 's/.*key *= *\([^ ]*.*\)/\1/p' < /etc/ceph/ceph.client.admin.keyring) > /etc/ceph/admin.secret
-chmod 600 /etc/ceph/admin.secret
+sudo sh -c 'echo $(sed -n 's/.*key *= *\([^ ]*.*\)/\1/p' < /etc/ceph/ceph.client.admin.keyring) > /etc/ceph/admin.secret'
+sudo chmod 600 /etc/ceph/admin.secret
 echo "Mount the file system, Replace ceph-node2 with the hostname or IP address of a Ceph monitor within your Storage Cluster."
-mkdir -p /mnt/cephfs
-mount -t ceph `hostname -I`:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret
+sudo mkdir -p /mnt/cephfs
+sudo mount -t ceph `hostname -I|cut -d" " -f1`:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret
 
 #echo "Enable compression"
 #radosgw-admin bucket stats
