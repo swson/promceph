@@ -48,7 +48,7 @@ echo ""
 echo "Mounting ceph file system..."
 sudo su -
 echo "Creating storage pools..."
-ceph osd pool create cephfs_data (erasure)
+ceph osd pool create cephfs_data # (erasure)
 ceph osd pool create cephfs_metadata
 echo "Creating the new ceph file system..."
 ceph fs new cephfs cephfs_metadata cephfs_data # (if erasure: ceph osd pool set cephfs_data allow_ec_overwrites true)
