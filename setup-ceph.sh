@@ -14,11 +14,16 @@ echo ""
 echo "Install ceph-common and cephadm tools..."
 sudo ./cephadm install cephadm ceph-common
 
+# get node list
+tail +2 /etc/hosts|awk '{print $NF}'| sort > node-list
+NUM_NODES=`wc -l node-list | awk '{print $1}'`
+
 echo ""
 echo "Bootstrap your cluster..."
 sudo mkdir -p /etc/ceph
 # Replace <ip> with the IP address of your first manager node within your cluster (node1)
-sudo ./cephadm bootstrap --mon-ip <ip>
+DOMAIN_NAME=`hostname | cut -d . -f2-`
+sudo ./cephadm bootstrap --mon-ip `hostname -I | cut -d" " -f1`
 echo "Check ceph status..."
 sudo ceph status
 
@@ -26,8 +31,11 @@ echo ""
 echo "Adding more nodes..."
 # before you can add a new node to your cluster,
 # you need to copy the ceph ssh key from your manager node into your new server.
-sudo ssh-copy-id -f -i /etc/ceph/ceph.pub root@node2
-sudo ceph orch host add node2
+for node in `tail -n +2 node-list`
+do
+sudo ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node
+sudo ceph orch host add $node
+done
 
 echo ""
 echo "Adding storage, at lease 3 OSDs..."
@@ -56,7 +64,7 @@ echo $(sed -n 's/.*key *= *\([^ ]*.*\)/\1/p' < /etc/ceph/ceph.client.admin.keyri
 chmod 600 /etc/ceph/admin.secret
 echo "Mount the file system, Replace ceph-node2 with the hostname or IP address of a Ceph monitor within your Storage Cluster."
 mkdir -p /mnt/cephfs
-mount -t ceph ceph-node2:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret
+mount -t ceph `hostname -I`:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret
 
 #echo "Enable compression"
 #radosgw-admin bucket stats
