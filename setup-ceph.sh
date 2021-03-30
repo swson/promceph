@@ -49,7 +49,6 @@ sudo ceph orch apply osd --all-available-devices
 
 echo ""
 echo "Mounting ceph file system..."
-#sudo su -
 echo "Creating storage pools..."
 sudo ceph osd pool create cephfs_data # (erasure)
 sudo ceph osd pool create cephfs_metadata
@@ -63,7 +62,8 @@ sudo ceph mds stat
 
 echo ""
 echo "Store the secret key used for admin authentication into a file that can be used for mounting the Ceph FS"
-sudo sh -c 'echo $(sed -n 's/.*key *= *\([^ ]*.*\)/\1/p' < /etc/ceph/ceph.client.admin.keyring) > /etc/ceph/admin.secret'
+#sudo sh -c 'echo $(sed -n 's/.*key *= *\([^ ]*.*\)/\1/p' < /etc/ceph/ceph.client.admin.keyring) > /etc/ceph/admin.secret'  #### This line won't work due to permission issue on redirection
+sudo sh -c "cat /etc/ceph/ceph.client.admin.keyring | sed -n 's/.*key *= *\([^ ]*.*\)/\1/p' > /etc/ceph/admin.secret"
 sudo chmod 600 /etc/ceph/admin.secret
 echo "Mount the file system, Replace ceph-node2 with the hostname or IP address of a Ceph monitor within your Storage Cluster."
 sudo mkdir -p /mnt/cephfs
