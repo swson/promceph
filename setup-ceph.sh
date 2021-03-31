@@ -25,7 +25,9 @@ sudo mkdir -p /etc/ceph
 DOMAIN_NAME=`hostname | cut -d . -f2-`
 # should execute the following before running bootstrap
 sudo hostname `head -n 1 node-list`
-sudo ./cephadm bootstrap --mon-ip `hostname -I | cut -d" " -f1`
+#sudo ./cephadm bootstrap --mon-ip `hostname -I | cut -d" " -f1`   ### this line didn't work well
+IF=`/sbin/ifconfig|grep -i mtu|grep eno|cut -d: -f1`
+sudo ./cephadm bootstrap --mon-ip `/sbin/ifconfig $IF |grep -i mask | awk '{print $2}' | cut -f2 -d:`
 echo "Check ceph status..."
 sudo ceph status
 
