@@ -35,8 +35,10 @@ echo "Adding more nodes..."
 # you need to copy the ceph ssh key from your manager node into your new server.
 for node in `tail -n +2 node-list`
 do
-    sudo ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node
+    echo "sudo sh -c "ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node" ..."
+    sudo sh -c "ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node"
     # following commadline requires full node names
+    echo "sudo ceph orch host add $node.$DOMAIN_NAME ..."
     sudo ceph orch host add $node.$DOMAIN_NAME
 done
 
