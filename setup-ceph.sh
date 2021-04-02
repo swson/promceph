@@ -56,10 +56,12 @@ NUM_OSDS=`sudo ceph orch device ls | tail +2 | grep ssd | awk '{print $NF}'|grep
 echo "Wait until at least 3 OSDs are available ..."
 while [ "$NUM_OSDS" != "$NUM_NODES" ]
 do
-    NUM_OSDS=`sudo ceph orch device ls | tail +2 | grep ssd | awk '{print $NF}'|grep YES`
+    NUM_OSDS=`sudo ceph orch device ls | tail +2 | grep ssd | awk '{print $NF}'|grep YES|wc -l`
 done
 echo "Tell Ceph to consume any available and unused storage device..."
 sudo ceph orch apply osd --all-available-devices
+
+sleep 1m
 
 echo ""
 echo "Mounting ceph file system..."
