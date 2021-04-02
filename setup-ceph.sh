@@ -26,8 +26,9 @@ DOMAIN_NAME=`hostname | cut -d . -f2-`
 # should execute the following before running bootstrap
 sudo hostname `head -n 1 node-list`
 #sudo ./cephadm bootstrap --mon-ip `hostname -I | cut -d" " -f1`   ### this line didn't work well
-IF=`/sbin/ifconfig|grep -i mtu|grep eno|cut -d: -f1`
-sudo ./cephadm bootstrap --mon-ip `/sbin/ifconfig $IF |grep -i mask | awk '{print $2}' | cut -f2 -d:`
+#IF=`/sbin/ifconfig|grep -i mtu|grep eno|cut -d: -f1`  ## this work on Utah nodes
+#sudo ./cephadm bootstrap --mon-ip `/sbin/ifconfig $IF |grep -i mask | awk '{print $2}' | cut -f2 -d:`
+sudo ./cephadm bootstrap --mon-ip `curl ifconfig.me`
 echo "Check ceph status..."
 sudo ceph status
 
@@ -46,8 +47,14 @@ done
 
 echo ""
 echo "Adding storage, at lease 3 OSDs..."
-echo "list the current status..."
-sudo ceph orch device ls
+#echo "list the current status..."
+#sudo ceph orch device ls
+NUM_OSDS=`sudo ceph orch device ls | tail +2 | grep ssd | awk '{print $NF}'|grep YES`
+echo "Wait until at least 3 OSDs are available ..."
+while [ "$NUM_OSDS" != "$NUM_NODES" ]
+do
+    NUM_OSDS=`sudo ceph orch device ls | tail +2 | grep ssd | awk '{print $NF}'|grep YES`
+done
 echo "Tell Ceph to consume any available and unused storage device..."
 sudo ceph orch apply osd --all-available-devices
 
@@ -71,7 +78,7 @@ sudo sh -c "cat /etc/ceph/ceph.client.admin.keyring | sed -n 's/.*key *= *\([^ ]
 sudo chmod 600 /etc/ceph/admin.secret
 echo "Mount the file system, Replace ceph-node2 with the hostname or IP address of a Ceph monitor within your Storage Cluster."
 sudo mkdir -p /mnt/cephfs
-sudo mount -t ceph `hostname -I|cut -d" " -f1`:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret
+sudo mount -t ceph `curl ifconfig.me`:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret
 
 #echo "Enable compression"
 #radosgw-admin bucket stats
