@@ -43,7 +43,10 @@ do
     # following commadline requires full node names
     echo "sudo ceph orch host add $node.$DOMAIN_NAME ..."
     sudo ceph orch host add $node.$DOMAIN_NAME
+    sleep 30
 done
+
+sleep 1m
 
 echo ""
 echo "Adding storage, at lease 3 OSDs..."
