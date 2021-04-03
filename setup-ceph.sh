@@ -73,6 +73,7 @@ sudo ceph fs new cephfs cephfs_metadata cephfs_data # (if erasure: ceph osd pool
 echo "Create a ceph metadata server..."
 # ceph orch apply mds *<fs-name>* --placement="*<num-daemons>* [*<host1>* ...]"
 sudo ceph orch apply mds cephfs --placement="1 node0"
+sleep 1m
 echo "Checking the status of the Ceph MDS..."
 sudo ceph mds stat
 

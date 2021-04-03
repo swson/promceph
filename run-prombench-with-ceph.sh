@@ -1,12 +1,17 @@
 #!/bin/sh
-source ./prombench-setup-base.sh
+#source ./prombench-setup-base.sh
 
-source ./setup-ceph.sh
+#source ./setup-ceph.sh
 
 echo "Cloning test-infra github ..."
 git clone https://github.com/prometheus/test-infra.git
 cd test-infra
+MON_IP=`curl ifconfig.me`
 sed -i 's/6.3.0-beta1/7.3.6/g' prombench/manifests/cluster-infra/grafana_deployment.yaml
+sed -i 's#mountPath: /prometheus$#mountPath: /mnt/cephfs#g' prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
+sed -i 's#volumes:$#&\n      - name: cephfs\n        cephfs:\n          monitors:\n          - MON_IP:6789\n          user: admin\n          secretRef:\n            name: ceph-secret#g' prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
+sed -i "s/MON_IP/${MON_IP}/g" prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
+sed -i 's#instance-ssd$#cephfs#g' prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
 make
 cd infra
 
