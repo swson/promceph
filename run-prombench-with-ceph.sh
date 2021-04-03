@@ -12,6 +12,7 @@ sed -i 's#mountPath: /prometheus$#mountPath: /mnt/cephfs#g' prombench/manifests/
 sed -i 's#volumes:$#&\n      - name: cephfs\n        cephfs:\n          monitors:\n          - MON_IP:6789\n          user: admin\n          secretRef:\n            name: ceph-secret#g' prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
 sed -i "s/MON_IP/${MON_IP}/g" prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
 sed -i -z "s#instance-ssd\n          mount#cephfs\n          mount#g" prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
+sed -i "s#--storage.tsdb.path=/prometheus#--storage.tsdb.path=/mnt/cephfs#g" prombench/manifests/prombench/benchmark/3b_prometheus-test_deployment.yaml
 make
 cd infra
 
