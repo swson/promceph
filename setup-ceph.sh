@@ -39,7 +39,7 @@ echo "Adding more nodes..."
 for node in `tail -n +2 node-list`
 do
     echo "sudo sh -c "ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node" ..."
-    sudo sh -c "ssh-copy-id -f -i /etc/ceph/ceph.pub root@$node"
+    sudo sh -c "ssh-copy-id -oStrictHostKeyChecking=no -f -i /etc/ceph/ceph.pub root@$node"
     # following commadline requires full node names
     echo "sudo ceph orch host add $node.$DOMAIN_NAME ..."
     sudo ceph orch host add $node.$DOMAIN_NAME
