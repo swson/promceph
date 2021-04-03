@@ -1,5 +1,5 @@
 #!/bin/sh
-./prombench-setup-base.sh
+source ./prombench-setup-base.sh
 
 echo "Cloning test-infra github ..."
 git clone https://github.com/prometheus/test-infra.git
