@@ -34,3 +34,14 @@ The script is tested on [Cloudlab](https://www.cloudlab.us/) using the small-lan
      ```
      $ source ./run-prombench-with-ceph.sh
      ```
+## Profiling
+Use this script to collect storage comsumption and TSDB direcotry structure.
+````
+while true
+do 
+  date 2>&1 | tee -a ceph.log
+  sudo ceph df 2>&1 tee -a ceph.log
+  tree /mnt/cephfs 2>&1 | tee -a ceph.log
+  sleep 300
+done
+````
