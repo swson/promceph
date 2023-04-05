@@ -35,8 +35,8 @@ sudo systemctl start docker
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
 echo 'export PATH=$PATH:/users/$USER/go/bin' >> ~/.profile
 echo 'export CLUSTER_NAME=prombench' >> ~/.profile
-echo 'export PR_NUMBER=8258' >> ~/.profile
-echo 'export RELEASE=v2.23.0' >> ~/.profile
+echo 'export PR_NUMBER=12151' >> ~/.profile
+echo 'export RELEASE=v2.43.0' >> ~/.profile
 
 echo 'export GRAFANA_ADMIN_PASSWORD=password' >> ~/.profile
 echo 'export DOMAIN_NAME=" "' >> ~/.profile
@@ -55,6 +55,8 @@ echo "Install KIND ..."
 go install sigs.k8s.io/kind@v0.18.0
 
 echo "Install kubernetes ..."
-curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+#curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18.2/bin/linux/amd64/kubectl"
+
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
