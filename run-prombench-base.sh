@@ -4,11 +4,13 @@ source ./prombench-setup-base.sh
 echo "Cloning test-infra github ..."
 git clone https://github.com/prometheus/test-infra.git
 cd test-infra
-sed -i 's/6.3.0-beta1/7.5.2/g' prombench/manifests/cluster-infra/grafana_deployment.yaml
+#sed -i 's/6.3.0-beta1/7.5.2/g' prombench/manifests/cluster-infra/grafana_deployment.yaml
 make
 cd infra
 
 echo "Set the following environment variables and deploy the cluster ..."
+sudo sysctl net/netfilter/nf_conntrack_max=655360
+sed -i 's/retention_period: 2160h/retention_period: 2184h/g' ../prombench/manifests/cluster-infra/6b_loki_stateful_set.yaml
 sudo ./infra kind cluster create -v PR_NUMBER:$PR_NUMBER -v CLUSTER_NAME:$CLUSTER_NAME -f ../prombench/manifests/cluster_kind.yaml
 
 echo "Remove taint(node-role.kubernetes.io/master) from prombench-control-plane node for deploying nginx-ingress-controller ..."
