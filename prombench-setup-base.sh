@@ -49,10 +49,10 @@ echo 'export SERVICEACCOUNT_CLIENT_EMAIL=seungwoo_son@uml.edu' >> ~/.profile
 . ~/.profile
 
 echo "Install GO ..."
-wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+wget -c https://go.dev/dl/go1.20.3.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
 
 echo "Install KIND ..."
-GO111MODULE="on" go get sigs.k8s.io/kind@v0.9.0
+go install sigs.k8s.io/kind@v0.18.0
 
 echo "Install kubernetes ..."
 curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
