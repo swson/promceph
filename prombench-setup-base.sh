@@ -35,8 +35,8 @@ sudo systemctl start docker
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
 echo 'export PATH=$PATH:/users/$USER/go/bin' >> ~/.profile
 echo 'export CLUSTER_NAME=prombench' >> ~/.profile
-echo 'export PR_NUMBER=12151' >> ~/.profile
-echo 'export RELEASE=v2.43.0' >> ~/.profile
+echo 'export PR_NUMBER=8258' >> ~/.profile
+echo 'export RELEASE=v2.23.0' >> ~/.profilee
 
 echo 'export GRAFANA_ADMIN_PASSWORD=password' >> ~/.profile
 echo 'export DOMAIN_NAME=" "' >> ~/.profile
