@@ -49,7 +49,7 @@ echo 'export SERVICEACCOUNT_CLIENT_EMAIL=seungwoo_son@uml.edu' >> ~/.profile
 . ~/.profile
 
 echo "Install GO ..."
-wget -c https://go.dev/dl/go1.20.3.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+wget -c https://go.dev/dl/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
 
 echo "Install KIND ..."
 #go install sigs.k8s.io/kind@v0.18.0
