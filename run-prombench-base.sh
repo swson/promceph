@@ -5,7 +5,6 @@ echo "Cloning test-infra github ..."
 git clone https://github.com/prometheus/test-infra.git
 cd test-infra
 #sed -i 's/6.3.0-beta1/7.5.2/g' prombench/manifests/cluster-infra/grafana_deployment.yaml
-go get -u sigs.k8s.io/kind
 make
 cd infra
 
