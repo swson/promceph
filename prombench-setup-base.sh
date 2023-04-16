@@ -61,7 +61,7 @@ wget -c https://dl.google.com/go/go1.20.3.linux-amd64.tar.gz -O - | sudo tar -xz
 echo "Install KIND ..."
 # The following line was for older versions, lower than 1.17
 # GO111MODULE="on" go get sigs.k8s.io/kind@v0.9.0
-go install sigs.k8s.io/kind@v0.18.0 && kind create cluster
+go install sigs.k8s.io/kind@v0.18.0
 
 echo "Install kubernetes ..."
 ## The following three lines were for old scripts
