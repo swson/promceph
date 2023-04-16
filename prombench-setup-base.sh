@@ -52,7 +52,9 @@ echo "Install GO ..."
 wget -c https://dl.google.com/go/go1.20.3.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
 
 echo "Install KIND ..."
-GO111MODULE="on" go get sigs.k8s.io/kind@v0.9.0
+# The following line was for older versions, lower than 1.17
+# GO111MODULE="on" go get sigs.k8s.io/kind@v0.9.0
+go install sigs.k8s.io/kind@v0.18.0 && kind create cluster
 
 echo "Install kubernetes ..."
 curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
