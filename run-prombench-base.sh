@@ -12,7 +12,8 @@ cd infra
 echo "Set the following environment variables and deploy the cluster ..."
 # m510 wants 524288
 # Some want 1048576
-sudo sysctl net/netfilter/nf_conntrack_max=1310720
+# Some want 
+sudo sysctl net/netfilter/nf_conntrack_max=1048576
 
 sed -i 's/retention_period: 2160h/retention_period: 2184h/g' ../prombench/manifests/cluster-infra/6b_loki_stateful_set.yaml
 sudo ./infra kind cluster create -v PR_NUMBER:$PR_NUMBER -v CLUSTER_NAME:$CLUSTER_NAME -f ../prombench/manifests/cluster_kind.yaml
